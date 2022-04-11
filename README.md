@@ -8,10 +8,21 @@ compilers and interpreters and to supplement previous course work
 on compilers. This version of the interpreter is written in java.
 
 Lox Language Grammar (This will expand as I make my way through the book)
+ 
 
-expression -> literal | unary | binary | grouping; 
+expression -> equality
 
-literal -> NUMBER | STRING | "true" | "false" | "nil";
+equality -> comparison( ( "!=" | "==") comparison)*;
+
+comparison => term (( ">" | ">=" | "<" | "<=") term )*;
+
+term -> factor ( ( "-" | "+" ) factor )*;
+
+factor => unary ( ( "/" | "*" ) unary)*;
+
+unary -> ("!" | "-") unary | primary;
+
+primary -> NUMBER | STRING | "true" | "false" | "nil" | "(" expression ")";
 
 grouping -> "(" expression ")";
 
