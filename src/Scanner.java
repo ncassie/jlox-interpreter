@@ -74,6 +74,7 @@ public class Scanner {
                 break;
             case '>':
                 addToken(match('=') ? TokenType.GREATER_EQUAL : TokenType.GREATER);
+                break;
             case '/':
                 if(match('/')){
                     // ignore rest of line due to comment
