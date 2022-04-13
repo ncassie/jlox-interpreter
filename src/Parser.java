@@ -1,6 +1,9 @@
 import java.util.List;
 
 public class Parser{
+
+    private static class ParseError extends RuntimeException{}
+
     // list of tokens to parse
     // because we are storing tokens in this list, methods don't receive an expression
     // as an argument -- different from some other implementations
@@ -13,6 +16,15 @@ public class Parser{
         this.tokens=tokens;
     }
 
+    // placeholder for now; will expand
+    Expr parse(){
+        try{
+            return expression();
+        }catch(ParseError error){
+            return null;
+        }
+    }
+
     // begin parsing of grammar rules
     // set up in this manner to allow proper associativity and precedence
     // parse expression grammar rule
@@ -22,7 +34,7 @@ public class Parser{
 
     // parse equality grammar rule
     private Expr equality(){
-        Expr expr = comparison;
+        Expr expr = comparison();
 
         while(match(TokenType.BANG_EQUAL, TokenType.EQUAL_EQUAL)){
             Token operator = previous();
@@ -79,7 +91,7 @@ public class Parser{
     }
 
     // parse primary grammar rule
-    private Expr primary() throws Exception{
+    private Expr primary(){
         if(match(TokenType.FALSE)){
             return new Expr.Literal(false);
         }
@@ -99,8 +111,9 @@ public class Parser{
             return new Expr.Grouping(expr);
         }
 
-        // need to handle improper return type
-        throw new Exception("Improper primary");
+        // error checking for improper expression
+        throw error(peek(), "Expect expression.");
+
     }
 
     // check to see if current token matches any of types in argument list
@@ -113,6 +126,13 @@ public class Parser{
             }
         }
         return false;
+    }
+
+    private Token consume(TokenType type, String message){
+        if(check(type)){
+            return advance();
+        }
+        throw error(peek(), message);
     }
 
     // compare current token to given token
@@ -143,5 +163,34 @@ public class Parser{
 
     private Token previous(){
         return tokens.get(current-1);
+    }
+
+    private ParseError error(Token token, String message){
+        Lox.error(token, message);
+        return new ParseError();
+    }
+
+    private void synchronize(){
+        advance();
+
+        while(!isAtEnd()){
+            if(previous().type == TokenType.SEMICOLON){
+                return;
+            }
+            switch(peek().type){
+                case CLASS:
+                case FUN:
+                case VAR:
+                case FOR:
+                case IF:
+                case WHILE:
+                case PRINT:
+                case RETURN:
+                    return;
+
+            }
+
+            advance();
+        }
     }
 }
