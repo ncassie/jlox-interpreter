@@ -3,7 +3,7 @@ import java.util.List;
 abstract class Stmt {
  interface Visitor<R> {
  R visitExpressionStmt(Expression stmt);
- R visitPrintStmt(print stmt);
+ R visitPrintStmt(Print stmt);
  }
  static class Expression extends Stmt {
  Expression(Expr expression) {
@@ -17,8 +17,8 @@ abstract class Stmt {
 
  final Expr expression;
  }
- static class print extends Stmt {
- print(Expr expression) {
+ static class Print extends Stmt {
+ Print(Expr expression) {
  this.expression = expression;
  }
 
