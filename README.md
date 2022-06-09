@@ -9,13 +9,17 @@ on compilers. This version of the interpreter is written in java.
 
 Lox Language Grammar (This will expand as I make my way through the book)
  
-program -> statement* EOF ;
+program -> declaration* EOF ;
+
+declaration -> varDecl | statement;
 
 statement -> exprStmt | printStmt ;
 
 exprStmt -> expression ";" ;
 
 printStmt -> "print" expression ";" ;
+
+varDecl -> "var" IDENTIFIER ( "=" expression )? ";" ;
 
 expression -> equality
 
@@ -29,7 +33,7 @@ factor => unary ( ( "/" | "*" ) unary)*;
 
 unary -> ("!" | "-") unary | primary;
 
-primary -> NUMBER | STRING | "true" | "false" | "nil" | "(" expression ")";
+primary -> NUMBER | STRING | "true" | "false" | "nil" | "(" expression ")" | IDENTIFIER ;
 
 grouping -> "(" expression ")";
 
